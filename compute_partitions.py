@@ -138,6 +138,9 @@ def compute_partitions(seg_array,
   output = np.zeros(seg_array[valid_sel].shape, dtype=np.uint8)
   corner = lom_radius
 
+  logging.info(' input shape: {}, output shape: {}'.format(seg_array.shape, output.shape))
+  logging.info(' valid_sel: {}'.format(valid_sel))
+
   if exclusion_regions is not None:
     sz, sy, sx = output.shape
     hz, hy, hx = np.mgrid[:sz, :sy, :sx]
@@ -207,6 +210,9 @@ def adjust_bboxes(bboxes, lom_radius):
 def main(argv):
   del argv  # Unused.
   path, dataset = FLAGS.input_volume.split(':')
+
+  logging.info(' dataset name: {}'.format(dataset))
+
   with h5py.File(path) as f:
     segmentation = f[dataset]
     bboxes = []
@@ -222,6 +228,10 @@ def main(argv):
 
     shape = segmentation.shape
     lom_radius = [int(x) for x in FLAGS.lom_radius]
+
+    logging.info('bounding box: {}, shape: {}, type: {}'.format(bboxes, shape, segmentation.dtype))
+    logging.info('minv: {}, maxv:{}'.format(np.min(segmentation), np.max(segmentation)))
+
     corner, partitions = compute_partitions(
         segmentation[...], [float(x) for x in FLAGS.thresholds], lom_radius,
         FLAGS.id_whitelist, FLAGS.exclusion_regions, FLAGS.mask_configs,
@@ -229,6 +239,8 @@ def main(argv):
 
   bboxes = adjust_bboxes(bboxes, np.array(lom_radius))
 
+  logging.info(' partition shape: {}, bboxes: {}'.format(partitions.shape, bboxes))
+  
   path, dataset = FLAGS.output_volume.split(':')
   with h5py.File(path, 'w') as f:
     ds = f.create_dataset(dataset, shape=shape, dtype=np.uint8, fillvalue=255,
