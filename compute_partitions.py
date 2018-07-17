@@ -193,6 +193,9 @@ def compute_partitions(seg_array,
 
   logging.info('Nonzero values: %d', np.sum(output > 0))
 
+  labels = set(np.unique(output))
+  logging.info('output labels: %d', len(labels))
+
   return corner, output
 
 
