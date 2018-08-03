@@ -1,7 +1,7 @@
 scikit-image
 scipy
 numpy 
-tensorflow 
+tensorflow-gpu 
 h5py
 absl-py 
 matplotlib
