@@ -316,7 +316,7 @@ def train_labels_size(model):
 
 def train_eval_size(model):
   return (np.array(model.pred_mask_size) +
-          np.array(model.deltas) * 2 * FLAGS.fov_moves)
+          np.array(model.deltas) * 2 * fov_moves())    #hzh: FLAGS.fov_moves)
 
 
 def train_image_size(model):

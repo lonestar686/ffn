@@ -866,14 +866,6 @@ class Runner(object):
         logging.error(error_string)
         raise NotImplementedError(error_string)
 
-      def _open_or_none(settings):
-        if settings.WhichOneof('volume_path') is None:
-          return None
-        return storage.decorated_volume(
-            settings, cache_max_bytes=int(1e7), cache_compression=False)
-      self._mask_volumes = {}
-      self._shift_mask_volume = _open_or_none(request.shift_mask)
-
     if request.reference_histogram:
       with gfile.Open(request.reference_histogram, 'r') as f:
         data = np.load(f)
